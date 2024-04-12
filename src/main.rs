@@ -1,8 +1,8 @@
-use std::process::Command;
-use std::thread::{sleep};
-use std::time::Duration;
 use device_query::{DeviceQuery, DeviceState, Keycode};
 use rand::Rng;
+use std::process::Command;
+use std::thread::sleep;
+use std::time::Duration;
 
 const WIDTH: usize = 100;
 const HEIGHT: usize = 25;
@@ -10,7 +10,6 @@ const HEIGHT: usize = 25;
 type Map = [[&'static str; WIDTH]; HEIGHT];
 
 fn main() {
-
     // 1.创建地图
     let mut map = create_map();
     // 2.创建蛇
@@ -34,7 +33,13 @@ fn main() {
         random_new_food(&mut food, &snake, &mut map);
         // 打印地图、蛇、食物
         print_map(map);
-        current_direction = input_control(&mut snake, &mut food, &mut map, current_direction, &keycodes);
+        current_direction = input_control(
+            &mut snake,
+            &mut food,
+            &mut map,
+            current_direction,
+            &keycodes,
+        );
         // move_snake(&mut snake, &mut map, current_direction);
         // 判断游戏是否结束
         if is_game_over(&snake) {
@@ -43,7 +48,11 @@ fn main() {
         }
         sleep(Duration::from_millis(snake.speed));
     }
-    Command::new("cmd.exe").arg("/c").arg("pause").status().expect("clear error!");
+    Command::new("cmd.exe")
+        .arg("/c")
+        .arg("pause")
+        .status()
+        .expect("clear error!");
 }
 
 /// 将食物加入地图
@@ -84,7 +93,10 @@ enum Direction {
 /// 创建食物
 fn create_food() -> Food {
     let position = [5, 8];
-    return Food { position, eat: false };
+    return Food {
+        position,
+        eat: false,
+    };
 }
 
 /// 创建蛇
@@ -156,8 +168,7 @@ fn move_snake(snake: &mut Snake, food: &mut Food, map: &mut Map, direction: Dire
 fn is_game_over(snake: &Snake) -> bool {
     let head = snake.head;
     // 如果蛇头触及到边界 触发游戏结束
-    if head[0] == 0 || head[0] == HEIGHT - 1
-        || head[1] == 0 || head[1] == WIDTH - 1 {
+    if head[0] == 0 || head[0] == HEIGHT - 1 || head[1] == 0 || head[1] == WIDTH - 1 {
         return true;
     }
     let body_list = &snake.body;
@@ -166,8 +177,7 @@ fn is_game_over(snake: &Snake) -> bool {
     }
     // 蛇头触及到蛇的身体
     for body in body_list.iter() {
-        if body[0] == head[0]
-            && body[1] == head[1] {
+        if body[0] == head[0] && body[1] == head[1] {
             return true;
         }
     }
@@ -223,15 +233,21 @@ fn create_map() -> Map {
 
 /// 清空屏幕
 fn clear_screen() {
-    Command::new("cmd.exe").arg("/c").arg("cls").status().expect("clear error!");
+    Command::new("cmd.exe")
+        .arg("/c")
+        .arg("cls")
+        .status()
+        .expect("clear error!");
 }
 
 /// 键盘控制
-fn input_control(snake: &mut Snake,
-                 food: &mut Food,
-                 map: &mut Map,
-                 direction: Direction,
-                 keycodes: &Vec<Keycode>) -> Direction {
+fn input_control(
+    snake: &mut Snake,
+    food: &mut Food,
+    map: &mut Map,
+    direction: Direction,
+    keycodes: &Vec<Keycode>,
+) -> Direction {
     let mut dir = direction;
     dbg!(keycodes);
     if !keycodes.is_empty() {
@@ -265,6 +281,3 @@ fn input_control(snake: &mut Snake,
     return dir;
     // println!("keys = {:?}", device_state.get_keys())
 }
-
-
-
