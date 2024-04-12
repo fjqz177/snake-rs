@@ -1,8 +1,7 @@
 use std::process::Command;
-use std::thread;
 use std::thread::{sleep};
 use std::time::Duration;
-use device_query::{DeviceEvents, DeviceQuery, DeviceState, Keycode};
+use device_query::{DeviceQuery, DeviceState, Keycode};
 use rand::Rng;
 
 const WIDTH: usize = 100;
@@ -59,7 +58,7 @@ fn add_food_to_map(food: &Food, map: &mut Map) {
 
 /// 随机生成食物
 /// 随机算法这里仅是简单实现，生成食物的时候需要避开蛇的身体
-fn random_new_food(food: &mut Food, snake: &Snake, map: &mut Map) {
+fn random_new_food(food: &mut Food, _snake: &Snake, map: &mut Map) {
     if !food.eat {
         // 如果当前的食物没有被吃掉，则不生成新的食物
         return;
