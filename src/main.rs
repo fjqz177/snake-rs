@@ -9,52 +9,29 @@ const HEIGHT: usize = 25;
 
 type Map = [[&'static str; WIDTH]; HEIGHT];
 
-fn main() {
-    // 1.创建地图
-    let mut map = create_map();
-    // 2.创建蛇
-    let mut snake = create_snake();
-    // 3.创建食物
-    let mut food = create_food();
-
-    let device_state = DeviceState::new();
-
-    let mut current_direction = Direction::RIGHT;
-
-    loop {
-        let keycodes = device_state.get_keys();
-
-        clear_screen();
-        // 将蛇加入地图
-        add_snake_to_map(&snake, &mut map);
-        // 将食物加入地图
-        add_food_to_map(&food, &mut map);
-        // 随机生成食物
-        random_new_food(&mut food, &snake, &mut map);
-        // 打印地图、蛇、食物
-        print_map(map);
-        current_direction = input_control(
-            &mut snake,
-            &mut food,
-            &mut map,
-            current_direction,
-            &keycodes,
-        );
-        // move_snake(&mut snake, &mut map, current_direction);
-        // 判断游戏是否结束
-        if is_game_over(&snake) {
-            println!("游戏结束！！！！");
-            break;
-        }
-        sleep(Duration::from_millis(snake.speed));
-    }
-    Command::new("cmd.exe")
-        .arg("/c")
-        .arg("pause")
-        .status()
-        .expect("clear error!");
+#[derive(Clone, Copy)]
+enum Direction {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
 }
 
+/// 蛇
+struct Snake {
+    // ● 蛇头
+    head: [usize; 2],
+    // 速度
+    speed: u64,
+    // 蛇身
+    body: Vec<[usize; 2]>,
+}
+
+/// 食物
+struct Food {
+    position: [usize; 2],
+    eat: bool,
+}
 /// 将食物加入地图
 fn add_food_to_map(food: &Food, map: &mut Map) {
     if food.eat {
@@ -80,14 +57,6 @@ fn random_new_food(food: &mut Food, _snake: &Snake, map: &mut Map) {
     map[x][y] = "▣";
     food.position = [x, y];
     food.eat = false;
-}
-
-#[derive(Clone, Copy)]
-enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
 }
 
 /// 创建食物
@@ -184,22 +153,6 @@ fn is_game_over(snake: &Snake) -> bool {
     return false;
 }
 
-/// 蛇
-struct Snake {
-    // ● 蛇头
-    head: [usize; 2],
-    // 速度
-    speed: u64,
-    // 蛇身
-    body: Vec<[usize; 2]>,
-}
-
-/// 食物
-struct Food {
-    position: [usize; 2],
-    eat: bool,
-}
-
 /// 打印地图
 fn print_map(map: Map) {
     for i in 0..map.len() {
@@ -280,4 +233,50 @@ fn input_control(
     }
     return dir;
     // println!("keys = {:?}", device_state.get_keys())
+}
+
+fn main() {
+    // 1.创建地图
+    let mut map = create_map();
+    // 2.创建蛇
+    let mut snake = create_snake();
+    // 3.创建食物
+    let mut food = create_food();
+
+    let device_state = DeviceState::new();
+
+    let mut current_direction = Direction::RIGHT;
+
+    loop {
+        let keycodes = device_state.get_keys();
+
+        clear_screen();
+        // 将蛇加入地图
+        add_snake_to_map(&snake, &mut map);
+        // 将食物加入地图
+        add_food_to_map(&food, &mut map);
+        // 随机生成食物
+        random_new_food(&mut food, &snake, &mut map);
+        // 打印地图、蛇、食物
+        print_map(map);
+        current_direction = input_control(
+            &mut snake,
+            &mut food,
+            &mut map,
+            current_direction,
+            &keycodes,
+        );
+        // move_snake(&mut snake, &mut map, current_direction);
+        // 判断游戏是否结束
+        if is_game_over(&snake) {
+            println!("游戏结束！！！！");
+            break;
+        }
+        sleep(Duration::from_millis(snake.speed));
+    }
+    Command::new("cmd.exe")
+        .arg("/c")
+        .arg("pause")
+        .status()
+        .expect("clear error!");
 }
