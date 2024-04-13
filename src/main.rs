@@ -9,6 +9,7 @@ const HEIGHT: usize = 25;
 
 type Map = [[&'static str; WIDTH]; HEIGHT];
 
+// 方向
 #[derive(Clone, Copy)]
 enum Direction {
     UP,
@@ -242,11 +243,11 @@ fn main() {
     let mut snake = create_snake();
     // 3.创建食物
     let mut food = create_food();
-
+    // 4.创建键盘输入状态
     let device_state = DeviceState::new();
-
+    // 5.初始化蛇的方向
     let mut current_direction = Direction::RIGHT;
-
+    // 6.游戏循环
     loop {
         let keycodes = device_state.get_keys();
 
