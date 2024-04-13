@@ -10,7 +10,7 @@ const HEIGHT: usize = 25;
 type Map = [[&'static str; WIDTH]; HEIGHT];
 
 // 方向
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 enum Direction {
     UP,
     DOWN,
@@ -203,24 +203,24 @@ fn input_control(
     keycodes: &Vec<Keycode>,
 ) -> Direction {
     let mut dir = direction;
-    dbg!(keycodes);
+    // dbg!(keycodes);
     if !keycodes.is_empty() {
         let keycode = keycodes.get(0);
         if let Some(key) = keycode {
             match key {
-                Keycode::A => {
+                Keycode::A if direction != Direction::RIGHT => {
                     dir = Direction::LEFT;
                     move_snake(snake, food, map, Direction::LEFT);
                 }
-                Keycode::D => {
+                Keycode::D if direction != Direction::LEFT => {
                     dir = Direction::RIGHT;
                     move_snake(snake, food, map, Direction::RIGHT);
                 }
-                Keycode::S => {
+                Keycode::S if direction != Direction::UP => {
                     dir = Direction::DOWN;
                     move_snake(snake, food, map, Direction::DOWN);
                 }
-                Keycode::W => {
+                Keycode::W if direction != Direction::DOWN => {
                     dir = Direction::UP;
                     move_snake(snake, food, map, Direction::UP);
                 }
